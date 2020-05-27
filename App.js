@@ -1,27 +1,26 @@
 import React from 'react';
 import { AppLoading } from 'expo';
-import MapView from 'react-native-maps';
-import {
-  Container,
-  Header,
-  Left,
-  Body,
-  Right,
-  Icon,
-  Title,
-  Text,
-  View,
-} from 'native-base';
-
-import { StyleSheet, Dimensions } from 'react-native';
+import { Title, Text, Card } from 'native-base';
+import { Row, Grid } from 'react-native-easy-grid';
+import { StyleSheet, Image, TouchableOpacity } from 'react-native';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
+import 'react-native-gesture-handler';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import Home from './pages/Home';
+import Libraries from './pages/libraries';
+import BookTracker from './pages/bookTracker';
+import AddBook from './pages/addBook';
+
+const Stack = createStackNavigator();
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isReady: false,
+      book: [],
     };
   }
 
@@ -40,31 +39,23 @@ export default class App extends React.Component {
     }
 
     return (
-      <Container>
-        <Header>
-          <Left />
-          <Body>
-            <Title>Bookey App</Title>
-            <View style={styles.container}>
-              <MapView style={styles.mapStyle} />
-            </View>
-          </Body>
-          <Right />
-        </Header>
-      </Container>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name='Bookey' component={Home} />
+          <Stack.Screen name='Libraries' component={Libraries} />
+          <Stack.Screen
+            name='BookTracker'
+            component={BookTracker}
+            initalParams={{ bookCopy: null }}
+            book={this.book}
+          />
+          <Stack.Screen
+            name='AddBook'
+            component={AddBook}
+            addToBookList={this.addToBookList}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  mapStyle: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-});
